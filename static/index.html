@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaLoom AI 2076</title>
+    <style>
+        :root { 
+            --bg: #0B0F19; --card: #161B22; --cyan: #00E5FF; 
+            --purple: #9C27B0; --green: #3FB950; --gold: #F1C40F; 
+            --text: #F0F6FC; --border: #30363D; --input-bg: #0D1117; 
+        }
+        body.light-mode {
+            --bg: #F0F4F8; --card: #FFFFFF; --cyan: #0284C7; 
+            --purple: #9333EA; --green: #16A34A; --gold: #CA8A04; 
+            --text: #0F172A; --border: #CBD5E1; --input-bg: #F8FAFC;
+        }
+
+        body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; margin: 0; padding: 14px; padding-bottom: 85px; transition: 0.3s; }
+        
+        #auth-gate {
+            position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;
+        }
+        .gate-card { background: var(--card); border: 2px solid var(--cyan); border-radius: 16px; padding: 20px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 0 25px rgba(0,229,255,0.2); }
+
+        .header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        h1 { color: var(--cyan); letter-spacing: 2px; font-size: 18px; margin: 0; }
+        .theme-btn { background: var(--purple); color: white; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+        
+        h3 { margin: 0 0 10px 0; font-size: 15px; color: var(--cyan); }
+        .card { background: var(--card); border-radius: 12px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .stat-val { font-size: 24px; font-weight: bold; margin-top: 4px; }
+        input, select, button { width: 100%; box-sizing: border-box; padding: 11px; border-radius: 8px; margin-top: 8px; font-size: 14px; border: none; }
+        input, select { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
+        button { background: var(--cyan); color: #000; font-weight: bold; cursor: pointer; }
+        button.purple { background: var(--purple); color: white; }
+        button.gold { background: var(--gold); color: #000; }
+        
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); display: flex; border-top: 1px solid var(--border); z-index: 100; }
+        .nav div { flex: 1; text-align: center; padding: 12px 1px; font-size: 10px; cursor: pointer; color: #8B949E; }
+        .nav div.active { color: var(--cyan); font-weight: bold; border-top: 2px solid var(--cyan); }
+        .tab { display: none; }
+        .tab.active { display: block; }
+        .log-item { border-bottom: 1px solid var(--border); padding: 10px 0; font-size: 13px; }
+        .badge { background: var(--input-bg); color: var(--cyan); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; border: 1px solid var(--border); }
+        .design-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--cyan); max-height: 260px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-gate">
+        <div class="gate-card">
+            <h2 style="color:var(--cyan); margin-top:0;">NOVALOOM 2076</h2>
+            <p style="font-size:12px; color:#8B949E;">🛡️ درع الحماية العصبية السيادية متعدد الطبقات</p>
+            <input type="text" id="gate-retinal" placeholder="بصمة قزحية العين (Retinal Hash)" value="RET-9908-ALPHA">
+            <input type="number" id="gate-wave" placeholder="تردد النشاط العصبي (Hz)" value="14.2">
+            <input type="number" id="gate-heart" placeholder="معدل نبضات القلب (BPM)" value="74">
+            <input type="password" id="gate-key" placeholder="مفتاح التشفير الزمني (ChronoKey)" value="CHR-KEY-2076">
+            <button class="purple" onclick="unlockSystem()" style="margin-top:14px;">تفعيل الدرع البيومتري والولوج</button>
+            <div id="gate-msg" style="margin-top:10px; font-size:12px; color:var(--green);"></div>
+        </div>
+    </div>
+
+    <div class="header-box">
+        <h1>NOVALOOM AI 2076</h1>
+        <button class="theme-btn" onclick="toggleTheme()">تبديل الوضع (ليلي/نهاري) ☀️</button>
+    </div>
+
+    <div id="tab-dash" class="tab active">
+        <div class="card">
+            <span style="color:var(--cyan)">حالة الشبكة الكمية النانوية</span>
+            <div id="d-quantum" style="margin-top:6px; font-weight:bold; color:var(--green);">جاري الفحص...</div>
+        </div>
+        <div class="card">
+            <span style="color:var(--gold)">محفظة عملات NLC للمستخدم</span>
+            <div id="d-wallet" class="stat-val" style="color:var(--gold)">10,000 NLC</div>
+        </div>
+        <div class="card"><span style="color:var(--purple)">حجم المبيعات والمزادات</span><div id="d-sales" class="stat-val">$0.0</div></div>
+        <div class="card"><span style="color:var(--green)">صافي أرباح المنصة</span><div id="d-rev" class="stat-val">$0.0</div></div>
+    </div>
+
+    <div id="tab-ai" class="tab">
+        <div class="card">
+            <h3>المصمم العصبي وتحليل الألوان النفسي</h3>
+            <input type="text" id="ai-prompt" placeholder="صف التصميم السيبراني (مثلاً: رداء نيون مضيء)...">
+            <input type="number" step="0.1" id="ai-emotion" value="1.2" placeholder="مؤشر الشغف (0.5 - 1.5)">
+            <button class="purple" onclick="genDesign()">توليد التصميم وتحليل البصمة النفسية</button>
+            <div id="ai-res" style="margin-top:12px; color:var(--cyan); font-size:13px;"></div>
+            <div id="psychology-box" style="margin-top:6px; font-size:12px; color:var(--green);"></div>
+            <div id="vector-box" style="margin-top:6px;"></div>
+            <img id="ai-preview" class="design-img" style="display:none;" />
+        </div>
+        <div class="card">
+            <h3>سجل الملكية المشفر (Chronos Ledger)</h3>
+            <div id="designs-list"></div>
+        </div>
+    </div>
+
+    <div id="tab-market" class="tab">
+        <div class="card">
+            <h3 style="color:var(--gold)">سوق المزاد العلني للأزياء الكمية (NLC)</h3>
+            <select id="market-filter" onchange="loadMarket()" style="margin-top:8px;">
+                <option value="newest">فرز حسب: الأحدث توثيقاً</option>
+                <option value="highest_bid">فرز حسب: الأعلى سعراً</option>
+            </select>
+        </div>
+        <div id="market-list"></div>
+    </div>
+
+    <div id="tab-future" class="tab">
+        <div class="card">
+            <h3>الوعي الكمي والإسقاط الهولوجرافي المطور</h3>
+            <input type="number" id="q-freq" value="14.5" placeholder="تردد موجات الدماغ (Hz)">
+            <input type="text" id="q-state" value="تركيز سيبراني عالي" placeholder="الحالة الذهنية">
+            <select id="q-spectrum" style="margin-top:8px;">
+                <option value="Cyan-Neon">طيف نيون سيبراني (انتباه)</option>
+                <option value="Quantum-Violet">طيف بنفسجي كوانتي (إبداع)</option>
+                <option value="Solar-Gold">طيف ذهبي فوتوني (طاقة)</option>
+            </select>
+            <button onclick="runQuantumConsciousness()">تفعيل الإسقاط الضوئي اللحظي</button>
+            <div id="q-res" style="margin-top:10px; color:var(--green); font-size:13px;"></div>
+        </div>
+        <div class="card">
+            <h3>الإصلاح الذاتي النانوي والتآكل الحراري</h3>
+            <input type="text" id="nano-model" value="Nova-Cyber X9" placeholder="طراز القماش الذكي">
+            <input type="number" id="nano-dmg" value="45" placeholder="نسبة التلف أو البقع (%)">
+            <input type="number" step="0.1" id="body-temp" value="37.2" placeholder="درجة حرارة الجسم (°C)">
+            <button class="purple" onclick="runNanoRepair()">تشخيص الإصلاح والإنذار الحراري</button>
+            <div id="nano-res" style="margin-top:10px; color:var(--cyan); font-size:13px;"></div>
+        </div>
+    </div>
+
+    <div id="tab-inv" class="tab">
+        <div class="card">
+            <h3>إضافة ألياف نانو للمخزون الكمي</h3>
+            <input type="text" id="inv-name" placeholder="اسم الألياف الذكية">
+            <input type="number" id="inv-qty" placeholder="الكمية بالأمتار">
+            <button onclick="addInv()">تسجيل في النظام</button>
+            <div id="inv-msg" style="margin-top:8px; color:var(--green); font-size:13px;"></div>
+        </div>
+        <div class="card">
+            <h3>المخزون والأرصدة المتاحة</h3>
+            <div id="inv-list"></div>
+        </div>
+    </div>
+
+    <div id="tab-hr" class="tab">
+        <div class="card" style="text-align:center;">
+            <h3>المصادقة العصبية الحيوية للموظفين</h3>
+            <input type="number" id="emp-id" value="303">
+            <button class="purple" onclick="authNeural()">مسح البصمة العصبية الحيوية</button>
+            <div id="hr-msg" style="margin-top:10px; color:var(--green); font-size:13px;"></div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="active" onclick="switchTab('dash', this)">الرئيسية</div>
+        <div onclick="switchTab('ai', this)">المصمم</div>
+        <div onclick="switchTab('market', this)">المزاد</div>
+        <div onclick="switchTab('future', this)">عالم 2076</div>
+        <div onclick="switchTab('inv', this)">المخزون</div>
+        <div onclick="switchTab('hr', this)">الموارد</div>
+    </div>
+
+    <script>
+        async function unlockSystem() {
+            const retinal = document.getElementById('gate-retinal').value;
+            const wave = parseFloat(document.getElementById('gate-wave').value);
+            const heart = parseFloat(document.getElementById('gate-heart').value);
+            const key = document.getElementById('gate-key').value;
+
+            const r = await fetch('/auth/verify-multimodal', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    retinal_hash: retinal, 
+                    neural_wave_hz: wave, 
+                    heartbeat_bpm: heart,
+                    chrono_key: key
+                })
+            });
+            const d = await r.json();
+            if(d.status === 'granted') {
+                document.getElementById('gate-msg').innerText = d.message;
+                setTimeout(() => {
+                    document.getElementById('auth-gate').style.display = 'none';
+                }, 900);
+            } else {
+                document.getElementById('gate-msg').style.color = '#FF5252';
+                document.getElementById('gate-msg').innerText = d.message;
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        function switchTab(id, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav div').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            el.classList.add('active');
+            if(id === 'dash') loadDash();
+            if(id === 'ai') loadDesigns();
+            if(id === 'market') loadMarket();
+            if(id === 'inv') loadInv();
+        }
+
+        async function loadDash() {
+            const r = await fetch('/enterprise/dashboard');
+            const d = await r.json();
+            document.getElementById('d-sales').innerText = '$' + d.gross_sales_volume;
+            document.getElementById('d-rev').innerText = '$' + d.net_app_revenue;
+            document.getElementById('d-quantum').innerText = d.quantum_supply_alert;
+            document.getElementById('d-wallet').innerText = d.user_wallet_nlc.toLocaleString() + ' NLC';
+        }
+
+        async function genDesign() {
+            const prompt = document.getElementById('ai-prompt').value;
+            const emotion = parseFloat(document.getElementById('ai-emotion').value);
+            if(!prompt) return;
+            document.getElementById('ai-res').innerText = 'جاري توليد الصورة العصبية وتحليل البصمة النفسية...';
+            const r = await fetch('/ai/generate-design', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({designer_name: 'Maher', prompt: prompt, fabric_type: 'Nano-Silk', emotion_score: emotion})
+            });
+            const d = await r.json();
+            document.getElementById('ai-res').innerHTML = `السعر: <b>$${d.dynamic_price}</b> | البصمة: <span class="badge">${d.chronos_hash}</span>`;
+            document.getElementById('psychology-box').innerHTML = `🧠 <b>تحليل النمط النفسي:</b> ${d.color_psychology}`;
+            document.getElementById('vector-box').innerHTML = `📐 <b>تصدير الكود الهندسي (SVG):</b> <div style="background:var(--input-bg); padding:6px; border-radius:6px; margin-top:4px; font-size:11px; color:var(--cyan); overflow-x:auto;">${d.vector_svg}</div>`;
+            const img = document.getElementById('ai-preview');
+            img.src = d.image_url;
+            img.style.display = 'block';
+            loadDesigns();
+        }
+
+        async function loadDesigns() {
+            const r = await fetch('/ai/designs');
+            const list = await r.json();
+            document.getElementById('designs-list').innerHTML = list.map(i => `<div class="log-item"><span class="badge">${i.hash || 'CHR'}</span> ${i.prompt} - <b>$${i.price}</b></div>`).join('');
+        }
+
+        async function loadMarket() {
+            const sortVal = document.getElementById('market-filter').value;
+            const r = await fetch(`/ai/designs?sort_by=${sortVal}`);
+            const list = await r.json();
+            document.getElementById('market-list').innerHTML = list.map(i => `
+                <div class="card">
+                    <span class="badge">${i.hash || 'CHR-2076'}</span>
+                    <div style="font-weight:bold; margin:6px 0;">${i.prompt}</div>
+                    ${i.image_url ? `<img src="${i.image_url}" class="design-img" />` : ''}
+                    <div style="font-size:12px; color:var(--green); margin-top:4px;">🧠 ${i.color_psychology}</div>
+                    <div style="color:var(--gold); margin-top:8px;">أعلى مزايدة: <b>$${i.highest_bid} NLC</b></div>
+                    <input type="number" id="bid-in-${i.id}" value="${Math.round(i.highest_bid + 35)}">
+                    <button class="gold" onclick="placeBid(${i.id})">مزايدة فورية من محفظة NLC</button>
+                </div>
+            `).join('');
+        }
+
+        async function placeBid(id) {
+            const amt = parseFloat(document.getElementById('bid-in-' + id).value);
+            const r = await fetch('/marketplace/bid', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({design_id: id, bid_amount: amt})
+            });
+            const d = await r.json();
+            alert(d.message);
+            loadMarket();
+            loadDash();
+        }
+
+        async function runQuantumConsciousness() {
+            const r = await fetch('/ai/quantum-consciousness', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    brainwave_freq_hz: parseFloat(document.getElementById('q-freq').value),
+                    mental_state_tag: document.getElementById('q-state').value,
+                    light_spectrum: document.getElementById('q-spectrum').value
+                })
+            });
+            const d = await r.json();
+            document.getElementById('q-res').innerHTML = `كود الوعي: <b>${d.consciousness_code}</b><br>تأثير الطيف: ${d.spectrum_effect}<br>${d.status}`;
+        }
+
+        async function runNanoRepair() {
+            const r = await fetch('/ai/nano-repair-advanced', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    fabric_model: document.getElementById('nano-model').value,
+                    damage_severity_percent: parseFloat(document.getElementById('nano-dmg').value),
+                    body_temperature: parseFloat(document.getElementById('body-temp').value)
+                })
+            });
+            const d = await r.json();
+            document.getElementById('nano-res').innerHTML = `<b>${d.status}</b><br>الوحدات: ${d.nanobots_consumed}<br>الزمن: ${d.duration}<br><span style="color:var(--gold);">${d.thermal_alert}</span>`;
+        }
+
+        async function addInv() {
+            const name = document.getElementById('inv-name').value;
+            const qty = parseFloat(document.getElementById('inv-qty').value);
+            if(!name || !qty) return;
+            const r = await fetch('/enterprise/inventory/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({item_name: name, fabric_type: 'Quantum', quantity_meters: qty, unit_cost: 20.0})
+            });
+            const d = await r.json();
+            document.getElementById('inv-msg').innerText = d.message;
+            loadInv();
+        }
+
+        async function loadInv() {
+            const r = await fetch('/enterprise/inventory');
+            const list = await r.json();
+            document.getElementById('inv-list').innerHTML = list.map(i => `<div class="log-item">${i.item_name}: <b>${i.quantity_meters} متر</b></div>`).join('');
+        }
+
+        async function authNeural() {
+            const id = parseInt(document.getElementById('emp-id').value);
+            const r = await fetch('/auth/neural-id', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({employee_id: id, scan_hash: 'ULTIMATE_2076'})
+            });
+            const d = await r.json();
+            document.getElementById('hr-msg').innerText = d.message;
+        }
+        loadDash();
+    </script>
+</body>
+</html>
+
