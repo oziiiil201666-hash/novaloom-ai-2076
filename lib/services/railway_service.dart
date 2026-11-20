@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class RailwayService {
   final String baseUrl;
-  RailwayService({this.baseUrl = 'https://YOUR-RAILWAY-APP.up.railway.app'});
+  RailwayService({this.baseUrl = 'https://REAL-DOMAIN.up.railway.app'});
 
   Future<dynamic> getDashboard() async {
     final res = await http.get(Uri.parse('$baseUrl/enterprise/dashboard'));
